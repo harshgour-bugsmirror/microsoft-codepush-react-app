@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CodePushDemo</string>
+    <string name="CodePushDeploymentKey">miPrEUAWEUu4pGbfJLyvJxpNlMZENyKYNJ12Ng</string>
+    <string name="CodePushServerUrl">https://decimeter-amount-headstand.ngrok-free.dev/</string>
+</resources>
