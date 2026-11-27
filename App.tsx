@@ -6,6 +6,8 @@ import {
   useColorScheme,
   View,
   Text,
+  Platform,
+  Image,
 } from 'react-native';
 import {
   SafeAreaProvider,
@@ -13,7 +15,11 @@ import {
 } from 'react-native-safe-area-context';
 import codePush from 'react-native-code-push';
 
-const DEPLOYMENT_KEY = 'miPrEUAWEUu4pGbfJLyvJxpNlMZENyKYNJ12Ng';
+const DEPLOYMENT_KEY_ANDROID = 'miPrEUAWEUu4pGbfJLyvJxpNlMZENyKYNJ12Ng';
+const DEPLOYMENT_KEY_IOS = 'DF8LUmKSPGUmeUxWDJBv8z_TAPHeNyKYNJ12Ng';
+
+const DEPLOYMENT_KEY =
+  Platform.OS === 'ios' ? DEPLOYMENT_KEY_IOS : DEPLOYMENT_KEY_ANDROID;
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -43,7 +49,7 @@ function App() {
             console.log('[CodePush] Update installed! Restarting...');
             break;
           case codePush.SyncStatus.UNKNOWN_ERROR:
-            Alert.alert('CodePush Error', 'Sync failed. Check connection.');
+            console.log('[CodePush Error]', 'Sync failed. Check connection.');
             break;
         }
       }
@@ -60,27 +66,52 @@ function App() {
 
 function AppContent() {
   const safeAreaInsets = useSafeAreaInsets();
+  const isIOS = Platform.OS === 'ios';
 
   return (
     <View style={[styles.container, { paddingTop: safeAreaInsets.top }]}>
       <View style={styles.content}>
-        {/* Updated Status Pill */}
-        <View style={styles.statusPill}>
-          <View style={styles.pulseDot} />
-          <Text style={styles.statusText}>Build v13.0 • Wireless OTA Verified</Text>
+        {/* Top Status Row */}
+        <View style={styles.topRow}>
+          <View style={styles.statusPill}>
+            <View style={styles.pulseDot} />
+            <Text style={styles.statusText}>Build v28.0 • Live OTA</Text>
+          </View>
+          <View style={styles.platformBadge}>
+            <Text style={styles.platformBadgeText}>
+              {isIOS ? 'iOS' : 'Android'}
+            </Text>
+          </View>
         </View>
 
-        {/* Hero Header */}
-        <Text style={styles.headerTitle}>OTA Pipeline Active 13.0</Text>
-        <Text style={styles.headerSubtitle}>
-          This bundle was pushed over the air without rebuilding the Android APK.
-        </Text>
+        {/* Hero Card */}
+        <View style={styles.heroCard}>
+          <Image
+            source={require('./src/assets/surfIcon.jpeg')}
+            style={styles.testImage}
+            resizeMode="cover"
+          />
+          <View style={styles.heroTextGroup}>
+            <Text style={styles.headerTitle}>OTA Pipeline 28.0</Text>
+            <Text style={styles.headerSubtitle}>
+              Delivered wirelessly without rebuilding the{' '}
+              {isIOS ? 'iOS IPA' : 'Android APK'}.
+            </Text>
+          </View>
+        </View>
 
         {/* Spec Panel */}
         <View style={styles.panel}>
           <View style={styles.panelRow}>
             <Text style={styles.panelLabel}>Active Release</Text>
-            <Text style={styles.panelValueAccent}>v13.0 (Latest)</Text>
+            <Text style={styles.panelValueAccent}>v28.0 (Latest)</Text>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.panelRow}>
+            <Text style={styles.panelLabel}>Target Platform</Text>
+            <Text style={styles.panelValue}>
+              {isIOS ? 'iOS (UIScene)' : 'Android'}
+            </Text>
           </View>
           <View style={styles.divider} />
           <View style={styles.panelRow}>
@@ -89,8 +120,8 @@ function AppContent() {
           </View>
           <View style={styles.divider} />
           <View style={styles.panelRow}>
-            <Text style={styles.panelLabel}>Connection Mode</Text>
-            <Text style={styles.panelValueSuccess}>No ADB / Pure Cloud</Text>
+            <Text style={styles.panelLabel}>Delivery Mode</Text>
+            <Text style={styles.panelValueSuccess}>Pure Cloud OTA</Text>
           </View>
         </View>
       </View>
@@ -101,57 +132,92 @@ function AppContent() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#0b0e14',
+    backgroundColor: '#070b12',
   },
   content: {
     flex: 1,
     justifyContent: 'center',
-    paddingHorizontal: 28,
+    paddingHorizontal: 24,
+  },
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   statusPill: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-start',
-    backgroundColor: '#161b26',
+    backgroundColor: '#0f1f1c',
     borderWidth: 1,
-    borderColor: '#f59e0b',
+    borderColor: '#10b981',
     borderRadius: 24,
     paddingHorizontal: 12,
     paddingVertical: 6,
-    marginBottom: 20,
   },
   pulseDot: {
     width: 7,
     height: 7,
     borderRadius: 4,
-    backgroundColor: '#f59e0b',
+    backgroundColor: '#10b981',
     marginRight: 8,
   },
   statusText: {
-    color: '#fbbf24',
+    color: '#34d399',
     fontSize: 12,
     fontWeight: '600',
     letterSpacing: 0.3,
   },
-  headerTitle: {
-    fontSize: 30,
+  platformBadge: {
+    backgroundColor: '#0f172a',
+    borderWidth: 1,
+    borderColor: '#38bdf8',
+    borderRadius: 12,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  platformBadgeText: {
+    color: '#38bdf8',
+    fontSize: 12,
     fontWeight: '700',
-    color: '#f8fafc',
-    letterSpacing: -0.5,
-    marginBottom: 8,
   },
-  headerSubtitle: {
-    fontSize: 15,
-    color: '#94a3b8',
-    lineHeight: 22,
-    marginBottom: 32,
-  },
-  panel: {
-    backgroundColor: '#111622',
+  heroCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#0f1623',
     borderWidth: 1,
     borderColor: '#1e293b',
+    borderRadius: 16,
+    padding: 16,
+    marginBottom: 20,
+  },
+  testImage: {
+    width: 72,
+    height: 72,
     borderRadius: 14,
-    paddingHorizontal: 16,
+    marginRight: 16,
+  },
+  heroTextGroup: {
+    flex: 1,
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#f8fafc',
+    letterSpacing: -0.4,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 13,
+    color: '#94a3b8',
+    lineHeight: 19,
+  },
+  panel: {
+    backgroundColor: '#0f1623',
+    borderWidth: 1,
+    borderColor: '#1e293b',
+    borderRadius: 16,
+    paddingHorizontal: 18,
     paddingVertical: 4,
   },
   panelRow: {
@@ -171,12 +237,12 @@ const styles = StyleSheet.create({
   },
   panelValue: {
     fontSize: 13,
-    color: '#cbd5e1',
+    color: '#e2e8f0',
     fontWeight: '500',
   },
   panelValueAccent: {
     fontSize: 13,
-    color: '#fbbf24',
+    color: '#38bdf8',
     fontWeight: '700',
   },
   panelValueSuccess: {

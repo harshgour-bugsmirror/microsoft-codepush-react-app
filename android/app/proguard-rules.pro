@@ -8,3 +8,7 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+
+# Microsoft CodePush - Keep all classes and members
+-keep class com.microsoft.codepush.react.** { *; }
+-keepclassmembers class com.microsoft.codepush.react.** { *; }
